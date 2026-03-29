@@ -1,3 +1,4 @@
+import { SCENE_BREAK_MARKER } from "./text-cleaner.js";
 import type { Language } from "./types.js";
 
 /**
@@ -97,6 +98,10 @@ function applyPunctuationMarkup(text: string): string {
 }
 
 export function textToSsml(text: string, lang: Language): string {
+  // Scene break → long pause, nothing else
+  if (text === SCENE_BREAK_MARKER) {
+    return '<speak><break time="1500ms"/></speak>';
+  }
   // 1. Replace interjections with markers (on raw text, so patterns match)
   let ssml = applyInterjections(text, lang);
   // 2. Escape XML in plain-text segments, resolve markers into SSML tags

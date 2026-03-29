@@ -59,23 +59,23 @@ describe("synthesizeChunks", () => {
 
     expect(client.synthesizeSpeech).toHaveBeenCalledWith({
       input: { ssml: "<speak>Hello world.</speak>" },
-      voice: { languageCode: "en-US", name: "en-US-Neural2-D" },
+      voice: { languageCode: "en-US", name: "en-US-Wavenet-D" },
       audioConfig: { audioEncoding: "MP3", sampleRateHertz: 24000 },
     });
   });
 
-  it("uses default Russian Neural2 voice", async () => {
+  it("uses default Russian voice", async () => {
     const client = makeMockClient();
     await synthesizeChunks([makeChunk(0, "Текст.")], { lang: "ru", outputDir, client });
 
     expect(client.synthesizeSpeech).toHaveBeenCalledWith(
       expect.objectContaining({
-        voice: { languageCode: "ru-RU", name: "ru-RU-Neural2-D" },
+        voice: { languageCode: "ru-RU", name: "ru-RU-Wavenet-D" },
       }),
     );
   });
 
-  it("uses default Ukrainian Wavenet voice", async () => {
+  it("uses default Ukrainian voice", async () => {
     const client = makeMockClient();
     await synthesizeChunks([makeChunk(0, "Текст.")], { lang: "uk", outputDir, client });
 

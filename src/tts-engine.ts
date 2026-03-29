@@ -22,9 +22,9 @@ export type TtsEngineConfig = {
 };
 
 const DEFAULT_VOICES: Record<Language, string> = {
-  en: "en-US-Neural2-D",
-  uk: "uk-UA-Wavenet-A", // Neural2 not available for uk-UA
-  ru: "ru-RU-Neural2-D",
+  en: "en-US-Wavenet-D",
+  uk: "uk-UA-Wavenet-A",
+  ru: "ru-RU-Wavenet-D",
 };
 
 const LANGUAGE_CODES: Record<Language, string> = {

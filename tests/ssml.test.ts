@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { textToSsml } from "../src/ssml.js";
+import { SCENE_BREAK_MARKER } from "../src/text-cleaner.js";
 
 describe("textToSsml", () => {
   describe("XML escaping", () => {
@@ -92,6 +93,12 @@ describe("textToSsml", () => {
   describe("no rules for other languages (yet)", () => {
     it("still wraps in speak tags and escapes for English", () => {
       expect(textToSsml("Hello & world", "en")).toBe("<speak>Hello &amp; world</speak>");
+    });
+  });
+
+  describe("scene breaks", () => {
+    it("converts scene break marker to long pause", () => {
+      expect(textToSsml(SCENE_BREAK_MARKER, "ru")).toBe('<speak><break time="1500ms"/></speak>');
     });
   });
 

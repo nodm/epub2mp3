@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanBook, cleanText } from "../src/text-cleaner.js";
+import { cleanBook, cleanText, SCENE_BREAK_MARKER } from "../src/text-cleaner.js";
 import type { ParsedBook } from "../src/types.js";
 
 describe("cleanText", () => {
@@ -32,6 +32,30 @@ describe("cleanText", () => {
   it("returns empty string for whitespace-only input", () => {
     expect(cleanText("   \n\t  ")).toBe("");
   });
+
+  it("strips footnote references", () => {
+    expect(cleanText("Азирафаэль.[2] Как по мне")).toBe("Азирафаэль. Как по мне");
+  });
+
+  it("strips multiple footnote references", () => {
+    expect(cleanText("слово[1] и ещё[23]")).toBe("слово и ещё");
+  });
+
+  it("replaces * * * scene break with marker", () => {
+    expect(cleanText("* * *")).toBe(SCENE_BREAK_MARKER);
+  });
+
+  it("replaces spaced scene breaks", () => {
+    expect(cleanText("  *  *  *  ")).toBe(SCENE_BREAK_MARKER);
+  });
+
+  it("replaces dash scene breaks", () => {
+    expect(cleanText("— — —")).toBe(SCENE_BREAK_MARKER);
+  });
+
+  it("does not treat single asterisk as scene break", () => {
+    expect(cleanText("* alone")).toBe("* alone");
+  });
 });
 
 describe("cleanBook", () => {
@@ -50,6 +74,21 @@ describe("cleanBook", () => {
     expect(result.blocks).toHaveLength(2);
     expect(result.blocks[0].text).toBe("Текст главы");
     expect(result.blocks[1].text).toBe("Вторая глава");
+  });
+
+  it("filters copyright boilerplate blocks", () => {
+    const book: ParsedBook = {
+      metadata: { title: "Test", author: "Author", language: "ru" },
+      blocks: [
+        { chapterIndex: 0, text: "© Юркан М., перевод на русский язык, 2012" },
+        { chapterIndex: 0, text: "© ООО «Издательство «Эксмо», 2012" },
+        { chapterIndex: 0, text: "Настоящий текст." },
+      ],
+    };
+
+    const result = cleanBook(book);
+    expect(result.blocks).toHaveLength(1);
+    expect(result.blocks[0].text).toBe("Настоящий текст.");
   });
 
   it("preserves metadata unchanged", () => {

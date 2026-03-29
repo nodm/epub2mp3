@@ -20,6 +20,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@elevenlabs/elevenlabs-js": "^2.40.0",
     "@google-cloud/text-to-speech": "^6.4.0",
     "@google-cloud/vertexai": "^1.10.3",
     "adm-zip": "^0.5.16",

@@ -21,6 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "@google-cloud/text-to-speech": "^6.4.0",
+    "@google-cloud/vertexai": "^1.10.3",
     "adm-zip": "^0.5.16",
     "ai": "^6.0.141",
     "commander": "^14.0.3",
@@ -28,6 +29,7 @@
     "execa": "^9.6.1",
     "htmlparser2": "^12.0.0",
     "node-id3": "^0.2.9",
+    "openai": "^6.33.0",
     "ora": "^9.3.0",
     "p-limit": "^7.3.0"
   },

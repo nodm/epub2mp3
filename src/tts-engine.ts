@@ -2,13 +2,10 @@ import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import textToSpeech from "@google-cloud/text-to-speech";
 import pLimit from "p-limit";
-import type { Chunk, Language } from "./types.js";
+import type { Chunk, Language, SynthesizedChunk } from "./types.js";
 import { withRetry } from "./utils/retry.js";
 
-export type SynthesizedChunk = {
-  chunk: Chunk;
-  audioPath: string;
-};
+export type { SynthesizedChunk };
 
 export type TtsClient = {
   synthesizeSpeech(request: unknown): Promise<[{ audioContent?: Uint8Array | string | null }]>;

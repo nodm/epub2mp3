@@ -24,6 +24,11 @@ export type Chunk = {
   text: string;
 };
 
+export type SynthesizedChunk = {
+  chunk: Chunk;
+  audioPath: string;
+};
+
 export type PipelineConfig = {
   inputPath: string;
   outputPath?: string;

@@ -96,6 +96,13 @@ EPUB file
 [6] Audio Exporter     -- MP3 concat (ffmpeg), ID3 tags (node-id3)
 ```
 
+## Documentation
+
+- [Architecture](docs/architecture.md) — pipeline design, data flow, stage details, design decisions
+- [GCP Setup](docs/gcp-setup.md) — Google Cloud credentials, available voices, troubleshooting
+- [EPUB Format](docs/epub-format.md) — how EPUBs are parsed, supported structures, edge cases
+- [Adding TTS Providers](docs/adding-tts-providers.md) — how to implement ElevenLabs, OpenAI, or other providers
+
 ## Development
 
 ```bash

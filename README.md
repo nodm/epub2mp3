@@ -81,13 +81,13 @@ EPUB file
 [1] EPUB Parser        -- extract text and metadata from EPUB ZIP
     |
     v
-[2] Text Cleaner       -- Unicode NFC normalization, strip zero-width chars
+[2] Text Cleaner       -- NFC normalization, strip footnotes/boilerplate, scene break detection
     |
     v
 [3] Sentence Chunker   -- split at sentence boundaries (Intl.Segmenter), <= 5000 chars
     |
     v
-[4] TTS Engine         -- synthesize via Google Cloud TTS (parallel, with retry)
+[4] TTS Engine         -- SSML synthesis via Google Cloud TTS (interjection handling, punctuation breaks)
     |
     v
 [5] Audio Processor    -- volume normalization (ffmpeg loudnorm)
@@ -102,6 +102,59 @@ EPUB file
 - [GCP Setup](docs/gcp-setup.md) — Google Cloud credentials, available voices, troubleshooting
 - [EPUB Format](docs/epub-format.md) — how EPUBs are parsed, supported structures, edge cases
 - [Adding TTS Providers](docs/adding-tts-providers.md) — how to implement ElevenLabs, OpenAI, or other providers
+
+## Test Scripts
+
+Helper scripts in `scripts/` for experimenting with TTS quality before running the full pipeline.
+
+### Preview SSML output
+
+See how text will be transformed (interjection handling, punctuation breaks, XML escaping):
+
+```bash
+npx tsx scripts/preview-ssml.ts <epub> [lang] [chars]
+npx tsx scripts/preview-ssml.ts book.epub ru 1000
+```
+
+### Test fragment with Google TTS
+
+Synthesize a short fragment using the main pipeline (Google Cloud TTS):
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=./key.json npx tsx scripts/test-fragment.ts <epub> [--lang ru] [--voice name] [--chars 500]
+```
+
+### Test fragment with OpenAI TTS
+
+Compare OpenAI TTS voices (`alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `nova`, `onyx`, `sage`, `shimmer`):
+
+```bash
+npx tsx scripts/test-openai-tts.ts <epub> [--voice onyx] [--chars 500] [--model tts-1-hd]
+```
+
+Requires `OPENAI_API_KEY` in `.env`.
+
+### Gemini stress marks
+
+Add Russian stress marks (ударения) via Gemini 2.5 Flash to improve pronunciation:
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=./key.json npx tsx scripts/test-stress-marks.ts <epub> [chars]
+```
+
+### Combined: stress marks + TTS
+
+Full chain — Gemini stress annotation → TTS synthesis:
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=./key.json npx tsx scripts/test-stressed-tts.ts <epub> [--voice onyx] [--chars 1000] [--tts openai|google]
+```
+
+### List available Google voices
+
+```bash
+GOOGLE_APPLICATION_CREDENTIALS=./key.json npx tsx scripts/list-voices.ts
+```
 
 ## Development
 

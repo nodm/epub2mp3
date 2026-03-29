@@ -1,0 +1,42 @@
+{
+  "name": "epub2mp3",
+  "version": "0.1.0",
+  "description": "Convert EPUB eBooks to MP3 audiobooks using Google Cloud TTS",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "bin": {
+    "epub2mp3": "./dist/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@ai-sdk/google": "^3.0.53",
+    "adm-zip": "^0.5.16",
+    "ai": "^6.0.141",
+    "commander": "^14.0.3",
+    "dotenv": "^17.3.1",
+    "execa": "^9.6.1",
+    "htmlparser2": "^12.0.0",
+    "node-id3": "^0.2.9",
+    "ora": "^9.3.0",
+    "p-limit": "^7.3.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.9",
+    "@types/adm-zip": "^0.5.8",
+    "@types/node": "^25.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}

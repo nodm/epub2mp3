@@ -51,31 +51,31 @@ describe("synthesizeChunks", () => {
     expect(content.toString()).toBe("fake-mp3-audio");
   });
 
-  it("calls TTS client with correct parameters for English", async () => {
+  it("calls TTS client with SSML input for English", async () => {
     const client = makeMockClient();
     const chunks = [makeChunk(0, "Hello world.")];
 
     await synthesizeChunks(chunks, { lang: "en", outputDir, client });
 
     expect(client.synthesizeSpeech).toHaveBeenCalledWith({
-      input: { text: "Hello world." },
-      voice: { languageCode: "en-US", name: "en-US-Wavenet-D" },
+      input: { ssml: "<speak>Hello world.</speak>" },
+      voice: { languageCode: "en-US", name: "en-US-Neural2-D" },
       audioConfig: { audioEncoding: "MP3", sampleRateHertz: 24000 },
     });
   });
 
-  it("uses default Russian voice", async () => {
+  it("uses default Russian Neural2 voice", async () => {
     const client = makeMockClient();
     await synthesizeChunks([makeChunk(0, "Текст.")], { lang: "ru", outputDir, client });
 
     expect(client.synthesizeSpeech).toHaveBeenCalledWith(
       expect.objectContaining({
-        voice: { languageCode: "ru-RU", name: "ru-RU-Wavenet-D" },
+        voice: { languageCode: "ru-RU", name: "ru-RU-Neural2-D" },
       }),
     );
   });
 
-  it("uses default Ukrainian voice", async () => {
+  it("uses default Ukrainian Wavenet voice", async () => {
     const client = makeMockClient();
     await synthesizeChunks([makeChunk(0, "Текст.")], { lang: "uk", outputDir, client });
 
@@ -84,6 +84,15 @@ describe("synthesizeChunks", () => {
         voice: { languageCode: "uk-UA", name: "uk-UA-Wavenet-A" },
       }),
     );
+  });
+
+  it("sends SSML with interjection handling for Russian", async () => {
+    const client = makeMockClient();
+    await synthesizeChunks([makeChunk(0, "Хм... ладно.")], { lang: "ru", outputDir, client });
+
+    const call = client.synthesizeSpeech.mock.calls[0][0] as { input: { ssml: string } };
+    expect(call.input.ssml).toContain("<speak>");
+    expect(call.input.ssml).toContain('<sub alias="хмм">');
   });
 
   it("uses custom voice when provided", async () => {

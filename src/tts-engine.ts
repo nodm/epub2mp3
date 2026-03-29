@@ -2,6 +2,7 @@ import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import textToSpeech from "@google-cloud/text-to-speech";
 import pLimit from "p-limit";
+import { textToSsml } from "./ssml.js";
 import type { Chunk, Language, SynthesizedChunk } from "./types.js";
 import { withRetry } from "./utils/retry.js";
 
@@ -21,9 +22,9 @@ export type TtsEngineConfig = {
 };
 
 const DEFAULT_VOICES: Record<Language, string> = {
-  en: "en-US-Wavenet-D",
-  uk: "uk-UA-Wavenet-A",
-  ru: "ru-RU-Wavenet-D",
+  en: "en-US-Neural2-D",
+  uk: "uk-UA-Wavenet-A", // Neural2 not available for uk-UA
+  ru: "ru-RU-Neural2-D",
 };
 
 const LANGUAGE_CODES: Record<Language, string> = {
@@ -71,8 +72,10 @@ async function synthesizeOne(
   const voiceName = config.voice ?? DEFAULT_VOICES[config.lang];
   const languageCode = LANGUAGE_CODES[config.lang];
 
+  const ssml = textToSsml(chunk.text, config.lang);
+
   const [response] = await client.synthesizeSpeech({
-    input: { text: chunk.text },
+    input: { ssml },
     voice: { languageCode, name: voiceName },
     audioConfig: { audioEncoding: "MP3", sampleRateHertz: 24000 },
   });
